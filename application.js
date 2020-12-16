@@ -50,13 +50,13 @@ var addTask = function (content) {
 
     success: function (response, textStatus) {
       console.log(response);
+      getAllTasks();
     },
 
     error: function (request, textStatus, errorMessage) {
       console.log(errorMessage);
     }
   });
-  //getAllTasks();
 }
 
 
@@ -84,34 +84,24 @@ $(document).ready(function () {
 
   //This is event propagation. It is so that html elements dynamically added to the DOM are passed the same event handlers.
   $(document).on('click', '.btn.remove', function (event) {
-    //console.log(taskID);
     deleteTask($(this).data('id'));
     $(this).closest('tr').remove();
     // $(this).parent().parent().remove();
     // The above also works
   });
 
-  var timeout;
-
-  $(document).on('input', 'tr input', function () {
-    clearTimeout(timeout);
-    timeout = setTimeout(function () {
-      updateTotal(0);
-    }, 800);
-  });
-  //.on('input', function () {}) sets an handler function for the 'input' event, which is fired synchronously as the value of an input element changes.
 
   $('#addTask').on('submit', function (event) {
     event.preventDefault();
     var description = $(this).children('[name=description]').val();
 
     addTask(description);
+    //getAllTasks();
 
     //$('.tasks tbody').children().remove();
     //getAllTasks();
 
     $(this).children('[name=description]').val('');
-    getAllTasks();
   });
   getAllTasks();
 });
