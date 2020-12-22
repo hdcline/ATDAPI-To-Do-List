@@ -25,7 +25,74 @@ var getAllTasks = function () {
             '<td><button class="btn btn-light btn-sm remove" data-id="' + response.tasks[i].id + '">Remove</button></td>' +
           '</tr>');
       }
+    },
 
+    error: function (request, textStatus, errorMessage) {
+      console.log(errorMessage);
+      //return(errorMessage);
+    }
+  });
+}
+
+
+var getActiveTasks = function () {
+  $.ajax({
+    type: 'GET',
+    url: 'https://altcademy-to-do-list-api.herokuapp.com/tasks?api_key=243',
+    dataType: 'json',
+    success: function (response, textStatus) {
+      console.log(response);
+      //return(response);
+      // response is a parsed JavaScript object instead of raw JSON
+      $('.tasks tbody').children().remove();
+      for (var i = 0; i < response.tasks.length; i++){
+        console.log(response.tasks[i].id);
+        var status = '';
+        if (response.tasks[i].completed === false){
+          status = 'Mark Complete';
+
+          $('.tasks tbody').append(
+            '<tr>' +
+              '<td class="desc">' + response.tasks[i].content + '</td>' +
+              '<td><button class="btn btn-light btn-sm status">' + status + '</button></td>' +
+              '<td><button class="btn btn-light btn-sm remove" data-id="' + response.tasks[i].id + '">Remove</button></td>' +
+            '</tr>');
+        }
+      }
+    },
+
+    error: function (request, textStatus, errorMessage) {
+      console.log(errorMessage);
+      //return(errorMessage);
+    }
+  });
+}
+
+
+var getCompletedTasks = function () {
+  $.ajax({
+    type: 'GET',
+    url: 'https://altcademy-to-do-list-api.herokuapp.com/tasks?api_key=243',
+    dataType: 'json',
+    success: function (response, textStatus) {
+      console.log(response);
+      //return(response);
+      // response is a parsed JavaScript object instead of raw JSON
+      $('.tasks tbody').children().remove();
+      for (var i = 0; i < response.tasks.length; i++){
+        console.log(response.tasks[i].id);
+        var status = '';
+        if (response.tasks[i].completed === true){
+          status = 'Mark Active';
+
+          $('.tasks tbody').append(
+            '<tr>' +
+              '<td class="desc">' + response.tasks[i].content + '</td>' +
+              '<td><button class="btn btn-light btn-sm status">' + status + '</button></td>' +
+              '<td><button class="btn btn-light btn-sm remove" data-id="' + response.tasks[i].id + '">Remove</button></td>' +
+            '</tr>');
+        }
+      }
     },
 
     error: function (request, textStatus, errorMessage) {
@@ -50,7 +117,13 @@ var addTask = function (content) {
 
     success: function (response, textStatus) {
       console.log(response);
-      getAllTasks();
+      //getAllTasks();
+      if ($('#all').is(':checked')) {
+          getAllTasks();
+      }
+      if ($('#active').is(':checked')) {
+          getActiveTasks();
+      }
     },
 
     error: function (request, textStatus, errorMessage) {
@@ -145,5 +218,27 @@ $(document).ready(function () {
     // $(this).parent().parent().remove();
     // The above also works
   });
-  getAllTasks();
+
+  if ($('#all').is(':checked')) {
+      getAllTasks();
+  }
+
+
+  $('#all').click(function () {
+        if ($(this).is(':checked')) {
+            getAllTasks();
+        }
+    });
+
+    $('#active').click(function () {
+        if ($(this).is(':checked')) {
+            getActiveTasks();
+        }
+    });
+
+    $('#completed').click(function () {
+        if ($(this).is(':checked')) {
+            getCompletedTasks();
+        }
+    });
 });
